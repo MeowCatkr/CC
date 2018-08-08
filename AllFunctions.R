@@ -2,7 +2,7 @@
 # i.e. perticular value is repeated in 80% of train data
 # trainData : pass the train dataset
 # returns : the name of columns that needs to drop.
-getBiasVariables = function(trainData,cutoff=0.8)
+GetBiasVariables = function(trainData,cutoff=0.8)
 {
   totalRecords=nrow(trainData)
   biasResult = data.frame(ColumnName=NULL,Value=NULL,Bias=NULL)
@@ -20,17 +20,6 @@ getBiasVariables = function(trainData,cutoff=0.8)
 }
 
 
-# A function that drops variables/columns from dataset
-# dataset : pass the object of dataframe
-# colNamesToRemove : pass the vector of characters
-# returns : the dataset with droped vaiables
-dropVariables=function(dataset,colNamesToRemove)
-{
-  for (variable in colNamesToRemove) {
-    dataset[variable] = NULL
-  }
-  dataset
-}
 
 # A function that replace NA value with provided value
 # dataset : pass the object of dataframe
@@ -84,19 +73,3 @@ covertToFactors=function(dataset,columnList)
   }
   dataset
 }
-
-ModelEvalMeasure_classification = function(confusionMatrix)
-{
-  TN=confusionMatrix[1]
-  FN=confusionMatrix[2]
-  FP=confusionMatrix[3]
-  TP=confusionMatrix[4]
-  
-  accuracy=(TN+TP)/(TN+FN+FP+TP)
-  sensitivity=TP/(TP+FN)
-  specificity=TN/(FP+TN)
-  
-  measure=data.frame(accuracy,sensitivity,specificity)
-  return(measure)
-}
-
