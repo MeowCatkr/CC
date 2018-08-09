@@ -45,7 +45,7 @@ ModelEvalMeasure_classification = function(confusionMatrix)
   sensitivity=TP/(TP+FN)
   specificity=TN/(FP+TN)
   
-  measure=data.frame(accuracy,sensitivity,specificity)
+  measure=data.frame(accuracy,sensitivity,specificity,TN,FN,FP,TP)
   return(measure)
 }
 
