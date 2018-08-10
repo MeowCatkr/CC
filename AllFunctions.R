@@ -73,3 +73,52 @@ covertToFactors=function(dataset,columnList)
   }
   dataset
 }
+
+
+GetCorrelatedColumns = function(dataset)
+{
+  nums <- sapply(dataset, is.numeric)
+  corMatrix=cor(dataset[nums])
+  corFeatures=data.frame('Var1'=NULL,'Var2'=NULL,'Relationship'=NULL,'Corr'=NULL)
+  
+  for(col in colnames(corMatrix)){
+    for(row in rownames(corMatrix))
+    {
+      if((!is.na(corMatrix[row,col])) && col!=row){
+        if(corMatrix[row,col]>=0.5 || corMatrix[row,col]<=-0.5)
+        {
+          if(row<col)
+          {
+            temp=row;row=col;col=temp;
+          }
+          corFeatures=rbind.data.frame(corFeatures,data.frame('Var1'=col,'Var2'=row,'Relationship'='Strong','Corr'=corMatrix[row,col]))
+        }
+        
+        else if(corMatrix[row,col]>=0.3 || corMatrix[row,col]<=-0.3)
+        {
+          if(row<col)
+          {
+            temp=row;row=col;col=temp;
+          }
+          corFeatures=rbind.data.frame(corFeatures,data.frame('Var1'=col,'Var2'=row,'Relationship'='Moderate','Corr'=corMatrix[row,col]))
+        }
+      }
+    }
+  }
+  corFeatures$Var1=as.character(corFeatures$Var1)
+  corFeatures$Var2=as.character(corFeatures$Var2)
+  corFeatures=unique(corFeatures[order(corFeatures$Relationship,corFeatures$Var1,corFeatures$Var2),]);
+  rownames(corFeatures)=NULL
+  return(corFeatures)
+}
+GetCorrlationWithTarget=function(dataset,targetVector)
+{
+  corFeatures=data.frame('Var'=NULL,'Target_Correlation'=NULL)
+  for(col in colnames(dataset))
+  {
+    corFeatures=rbind.data.frame(corFeatures,data.frame('Var'=col, 'Target_Correlation'=cor(dataset[col],targetVector)))
+  }
+  corFeatures=corFeatures[order(-abs(corFeatures$Target_Correlation)),]
+  rownames(corFeatures)=NULL
+  return(corFeatures)
+}
